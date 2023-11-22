@@ -45,22 +45,39 @@ Piece* matches_piece(int slab_x, int slab_y) {
 
 int maximize_profit(int slab_x, int slab_y){
     
-    // Returns value memoization matrix if already determined
+    // Returns value from memoization matrix if already determined
     if(memoization[slab_x-1][slab_y-1] != 0){
         return memoization[slab_x-1][slab_y-1];
     }
 
     // If there's a matching piece
     if(matches_piece(slab_x,slab_y) != nullptr){
-        // If not stored, stores and returns. 
-        Piece* p = matches_piece(slab_x,slab_y);
-        memoization[slab_x-1][slab_y-1] = p->profit;
-
-        if(slab_x == slab_y){
-            memoization[slab_y-1][slab_x-1] = p->profit;
-        }
         
-        return memoization[slab_x-1][slab_y-1];
+        // Gets piece profit
+        Piece* p = matches_piece(slab_x,slab_y);
+         
+        // Checking if continue cutting gives us increased profit
+        int max_profit = p->profit;
+
+        // Vertical cuts
+        for (int i = 1; i < slab_x; ++i) {
+            int potential_profit = maximize_profit(i, slab_y) + maximize_profit(slab_x - i, slab_y);
+            max_profit = max(max_profit, potential_profit);
+        }
+
+        // Horizontal cuts
+        for (int i = 1; i < slab_y; ++i) {
+            int potential_profit = maximize_profit(slab_x, i) + maximize_profit(slab_x, slab_y - i);
+            max_profit = max(max_profit, potential_profit);
+        }
+
+        //if(slab_x == slab_y){
+        //  memoization[slab_y-1][slab_x-1] = max(p->profit, max_profit);
+        //}
+
+        memoization[slab_x-1][slab_y-1] = max(p->profit, max_profit);
+
+        return max_profit;
     }
 
     if(!canConvertToPiece(slab_x,slab_y)){
@@ -92,9 +109,6 @@ int main(){
 
     int slab_x, slab_y;    
     scanf("%d %d", &slab_x, &slab_y);
-    
-    // max(aceitar peça, rejeitar peça)
-    // se rejeitar, vou ver a prox peça (avançando na fila)
     
     int num_pieces;
     scanf("%d", &num_pieces);
