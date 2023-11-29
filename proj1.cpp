@@ -1,130 +1,70 @@
 #include <iostream>
 #include <vector>
-#include <cstdio>
 
 using namespace std;
 typedef vector<vector<int> > matrix;
-
-// STRUCTS
-enum Orientation{
-    HORIZONTAL,
-    VERTICAL,
-};
-
-typedef struct {
-    int x;
-    int y;
-    int profit;
-} Piece;
-
-// GLOBAL VARIABLES
-vector<Piece> pieces;
-matrix memoization;
-
-bool canConvertToPiece(int slab_x, int slab_y) {
-    for (const Piece& piece : pieces) {
-        // Check if the dimensions of the rectangle are greater than or equal to the piece
-        if ((slab_x >= piece.x && slab_y >= piece.y) ||
-            (slab_x >= piece.y && slab_y >= piece.x)) {
-            return true; // Rectangle can be converted into this piece
-        }
-    }
-    return false; // Rectangle cannot be converted into any of the pieces
-}
-
-Piece* matches_piece(int slab_x, int slab_y) {
-    for (auto& piece : pieces) {
-        // Checks if the rectangle dimensions match the dimensions of a piece (and its rotated counterpart)
-        if ((piece.x == slab_x && piece.y == slab_y) || (piece.x == slab_y && piece.y == slab_x)) {
-            return &piece;
-        }
-    }
-    return nullptr; 
-}
-
-
-int maximize_profit(int slab_x, int slab_y){
+ 
+int maximize_profit(int slab_x, int slab_y, matrix profits){
     
-    // Returns value from memoization matrix if already determined
-    if(memoization[slab_x-1][slab_y-1] != 0){
-        return memoization[slab_x-1][slab_y-1];
-    }
+    // Initializing memoization matrix 
+    matrix memoization(slab_x + 1, vector<int>(slab_y + 1, 0));
 
-    // If there's a matching piece
-    if(matches_piece(slab_x,slab_y) != nullptr){
+    // For each rectangle width
+    for (int i = 1; i <= slab_x; ++i) {
+
+        int num_vertical_cuts = (i % 2 == 0) ? i/2 : (i - 1) / 2;
         
-        // Gets piece profit
-        Piece* p = matches_piece(slab_x,slab_y);
-         
-        // Checking if continue cutting gives us increased profit
-        int max_profit = p->profit;
+        // For each rectangle height
+        for (int j = 1; j <= slab_y; ++j) {
 
-        // Vertical cuts
-        for (int i = 1; i < slab_x; ++i) {
-            int potential_profit = maximize_profit(i, slab_y) + maximize_profit(slab_x - i, slab_y);
-            max_profit = max(max_profit, potential_profit);
+            int num_horizontal_cuts = (j % 2 == 0) ? j/ 2 : (j - 1) / 2;
+            
+            // Use direct indexing for profits vector with size checks
+            int profit1 = (i < static_cast<int>(profits.size()) && j < static_cast<int>(profits[i].size())) ? profits[i][j] : 0;
+            int profit2 = (j < static_cast<int>(profits.size()) && i < static_cast<int>(profits[j].size())) ? profits[j][i] : 0;
+
+            int matched_piece_profit = max(profit1, profit2);
+
+            // Check whether using the matching piece directly is more profitable
+            memoization[i][j] = max(memoization[i][j], matched_piece_profit);
+            
+            // If no matching piece, consider all possible cuts
+            for (int k = 1; k <= num_vertical_cuts; ++k) {
+                // For each vertical cut position, compares stored result in matrix with the sum of the results for the sub-rectangles
+                memoization[i][j] = max(memoization[i][j], memoization[k][j] + memoization[i - k][j]);
+            }
+            for (int k = 1; k <= num_horizontal_cuts; ++k) {
+                // For each horizontal cut position, compares stored result in matrix with the sum of the results of the sub-rectangles
+                memoization[i][j] = max(memoization[i][j], memoization[i][k] + memoization[i][j - k]);
+            }
         }
-
-        // Horizontal cuts
-        for (int i = 1; i < slab_y; ++i) {
-            int potential_profit = maximize_profit(slab_x, i) + maximize_profit(slab_x, slab_y - i);
-            max_profit = max(max_profit, potential_profit);
-        }
-
-        //if(slab_x == slab_y){
-        //  memoization[slab_y-1][slab_x-1] = max(p->profit, max_profit);
-        //}
-
-        memoization[slab_x-1][slab_y-1] = max(p->profit, max_profit);
-
-        return max_profit;
     }
-
-    if(!canConvertToPiece(slab_x,slab_y)){
-        return 0;
-    }
-
-    // There is no matching piece, we access all cutting possibilities
-    int max_profit = 0;
-
-    // Vertical cuts
-    for (int i = 1; i < slab_x; ++i) {
-        int current_profit = maximize_profit(i, slab_y) + maximize_profit(slab_x - i, slab_y);
-        max_profit = max(max_profit, current_profit);
-    }
-
-    // Horizontal cuts
-    for (int i = 1; i < slab_y; ++i) {
-        int current_profit = maximize_profit(slab_x, i) + maximize_profit(slab_x, slab_y - i);
-        max_profit = max(max_profit, current_profit);
-    }
-
-    memoization[slab_x-1][slab_y-1] = max_profit;
-
-    return max_profit;
+    return memoization[slab_x][slab_y];
 }
 
 
-int main(){
+int main() {
+    int input;
+    int slab_x, slab_y;
+    input = scanf("%d %d", &slab_x, &slab_y);
 
-    int slab_x, slab_y;    
-    scanf("%d %d", &slab_x, &slab_y);
-    
     int num_pieces;
-    scanf("%d", &num_pieces);
+    input = scanf("%d", &num_pieces);
 
-    pieces.resize(num_pieces);
+     // Initialize profits vector
+    matrix profits(slab_x + 1, vector<int>(slab_y + 1, 0));
 
-    for(int i = 0; i < num_pieces; i++){
-        int piece_x, piece_y, piece_profit;
-        scanf("%d %d %d", &piece_x, &piece_y, &piece_profit);
-        pieces[i] = {piece_x, piece_y, piece_profit};
+    int piece_x, piece_y, piece_profit;
+    for (int i = 0; i < num_pieces; i++) {
+        input = scanf("%d %d %d", &piece_x, &piece_y, &piece_profit);
+        if (piece_x <= slab_x && piece_y <= slab_y) {
+            profits[piece_x][piece_y] = piece_profit;
+        }
     }
 
-    memoization.resize(slab_x, vector<int>(slab_y, 0));
+    int result = maximize_profit(slab_x, slab_y, profits);
+    (void)input;
+    printf("%d\n", result);
 
-    int result = maximize_profit(slab_x,slab_y);
-
-    printf("%d\n",result);
-
+    return 0;
 }   
