@@ -21,5 +21,5 @@ To compile gen_supermarble.cpp use:
 > **g++ -std=c++11 -O3 -Wall -o gen_supermarble gen_supermarble.cpp -lm**
 
 To run gen_supermarble.cpp and create a unit testfile use:
-> **./gen_supermarble <N> <M> <P> > testfile
+> **./gen_supermarble N M P > testfile
 > (where N and M are the dimensions of the marble sheet and P the number of pieces)**  
