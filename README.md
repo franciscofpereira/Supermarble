@@ -1,8 +1,8 @@
 
-Descrition: This project was the first one developed for the class of Analysis and Synthesis of Algorithms, 
+**Descrition**: This project was the first one developed for the class of Analysis and Synthesis of Algorithms, 
             which was taken on the first semester of the second year of my bachelor's degree @IST. 
             
-Objective: Maximize the profit that can be extracted from a rectangular marble sheet when cutting it into smaller rectangular pieces.
+**Objective**: Maximize the profit that can be extracted from a rectangular marble sheet when cutting it into smaller rectangular pieces.
            The approach to solve this problem is similar to the one used on the knapsack problem. A dynamic programming approach is used
            to avoid recomputing the optimal solutions to the subproblems.
             
