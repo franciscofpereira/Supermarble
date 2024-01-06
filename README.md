@@ -13,12 +13,12 @@ Objective: Maximize the profit that can be extracted from a rectangular marble s
 -The source code to the problem's solution is in proj1.cpp.
 
 To compile proj1.cpp use:
-> **** g++ -std=c++11 -O3 -Wall proj1.cpp -lm
+> **g++ -std=c++11 -O3 -Wall proj1.cpp -lm**
 
 -To generate unit test files for the problem, you can compile and run gen_supermarble.cpp.
 
 To compile gen_supermarble.cpp use:
-> **** g++ -std=c++11 -O3 -Wall -o gen_supermarble gen_supermarble.cpp -lm
+> **g++ -std=c++11 -O3 -Wall -o gen_supermarble gen_supermarble.cpp -lm**
 
 To run gen_supermarble.cpp and create a unit testfile use:
-> **** ./gen_supermarble <N> <M> <P> > testfile (where N and M are the dimensions of the marble sheet and P the number of pieces)  
+> **./gen_supermarble <N> <M> <P> > testfile (where N and M are the dimensions of the marble sheet and P the number of pieces)**  
