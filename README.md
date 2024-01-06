@@ -1,5 +1,5 @@
 
-**Descrition**: This project was the first one developed for the class of Analysis and Synthesis of Algorithms, 
+**Description**: This project was the first one developed for the class of Analysis and Synthesis of Algorithms, 
             which was taken on the first semester of the second year of my bachelor's degree @IST. 
             
 **Objective**: Maximize the profit that can be extracted from a rectangular marble sheet when cutting it into smaller rectangular pieces.
