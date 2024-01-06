@@ -1,4 +1,4 @@
-# Super Marble Cutter
+# SuperMarble 
 
 ## Description
 
