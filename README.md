@@ -23,4 +23,4 @@ To compile `gen_supermarble.cpp`, use:
 
 To run `gen_supermarble.cpp` and create a unit test file, use:
 > **./gen_supermarble N M P > testfile**
-> (where N and M are the dimensions of the marble sheet, and P is the number of pieces)
+> (where N and M are the dimensions of the marble sheet, P the number of pieces and testfile the name of the unit test)
